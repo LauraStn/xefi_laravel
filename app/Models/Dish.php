@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Dish extends Model
 {
@@ -12,5 +12,17 @@ class Dish extends Model
        protected $fillable = [
         'title',
         'recipe',
+        'user_id'
     ];
+
+    public function creator()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function favoredByUsers()
+    {
+        return $this->belongsToMany(User::class);
+    }
+
 }
