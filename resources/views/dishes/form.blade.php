@@ -4,7 +4,7 @@
 
 @section('content')
     <h1>@yield('title')</h1>
-    <form class="vstack gap-2" action="{{ route($dish->exists ? 'dish.update' : 'dish.store', $dish) }}" method="post">
+    <form class="vstack gap-2" action="{{ route($dish->exists ? 'dish.update' : 'dish.store', $dish) }}" method="post" enctype="multipart/form-data">
 
         @csrf
         @method($dish->exists ? 'put' : 'post')
@@ -14,6 +14,7 @@
             <div class="col row">
                 @include('input.input', ['type' => 'textarea','label' => 'Recette','class' => 'col', 'name' => 'recipe', 'value' => $dish->recipe])
             </div>
+            @include('input.upload', ['label' => 'Image', 'name' => 'image_path'])
         </div>
         <div class="d-grid d-md-flex justify-content-md-end">
 

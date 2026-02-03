@@ -6,5 +6,5 @@
     <p><strong>Créateur :</strong> {{ $dish->creator->name }}</p>
     <p><strong>Recette :</strong> {{ $dish->recipe }}</p>
     <p><strong>Likes :</strong> {{ $dish->favoredByUsers()->count() }}</p>
+    <img src="{{ asset($dish->image_path) }}" alt="{{ $dish->title }}" class="img-fluid">
 @endsection
-
