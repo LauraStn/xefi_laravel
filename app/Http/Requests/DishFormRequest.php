@@ -24,6 +24,7 @@ class DishFormRequest extends FormRequest
         return [
             'title' => ['required'],
             'recipe' => ['required', 'max:2048'],
+            'image_path' => ['image', 'max:2048'],
         ];
     }
 }

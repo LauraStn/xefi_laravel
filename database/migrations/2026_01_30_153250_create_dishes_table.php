@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('dishes', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('recipe');
+            $table->text('recipe');
+            $table->string('image_path')
+                ->default('images/default-dish.png');
             $table->timestamps();
         });
     }

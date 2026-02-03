@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DishFormRequest;
 use App\Models\Dish;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use App\Http\Requests\DishFormRequest;
 
 class DishController extends Controller
 {
@@ -41,10 +41,31 @@ class DishController extends Controller
      */
     public function store(DishFormRequest $request)
     {
-        $dish = Dish::create(array_merge(
-            $request->validated(),
-            ['user_id' => auth()->id()]
-        )); 
+        $data = $request->validated();
+        $faker = \Faker\Factory::create();
+        $faker->addProvider(new \Xvladqt\Faker\LoremFlickrProvider($faker));
+        if ($request->hasFile('image_path')) {
+            $file = $request->file('image_path');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $file->move(public_path('images'), $filename);
+
+            $data['image_path'] = 'images/' . $filename;
+        } else {
+            $faker = \Faker\Factory::create();
+            $faker->addProvider(new \Xvladqt\Faker\LoremFlickrProvider($faker));
+
+            $imageUrl = $faker->imageUrl(640, 480, ['food'], true);
+            $imageContents = file_get_contents($imageUrl);
+
+            $filename = 'images/' . time() . '_' . Str::random(8) . '.jpg';
+            file_put_contents(public_path($filename), $imageContents);
+
+            $data['image_path'] = $filename;
+        }
+
+        $data['user_id'] = auth()->id();
+
+        $dish = Dish::create($data);
 
         return to_route('home')->with('success', 'Le plat a bien été créé');
     }
