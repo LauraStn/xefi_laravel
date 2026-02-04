@@ -21,8 +21,13 @@ class DishController extends Controller
      */
     public function index()
     {
+        $user = auth()->user();
+
+        $favoriteIds = $user ? $user->favoriteDishes->pluck('id')->toArray() : [];
+
         return view('home', [
-            'dishes' => Dish::orderBy('created_at', 'desc')->paginate(25)
+            'dishes' => Dish::orderBy('created_at', 'desc')->paginate(25),
+            'favoriteIds' => $favoriteIds,
         ]);
     }
 
@@ -67,7 +72,7 @@ class DishController extends Controller
 
         $dish = Dish::create($data);
 
-        return to_route('home')->with('success', 'Le plat a bien été créé');
+        return to_route('dishes.admin')->with('success', 'Le plat a bien été créé');
     }
 
     /**
@@ -85,10 +90,9 @@ class DishController extends Controller
      */
     public function edit(Dish $dish)
     {
-         return view('dishes.form', [
+        return view('dishes.form', [
             'dish' => $dish
         ]);
-
     }
 
     /**
@@ -97,7 +101,7 @@ class DishController extends Controller
     public function update(DishFormRequest $request, Dish $dish)
     {
         $dish->update($request->validated());
-        return to_route('home')->with('success', 'Le plat a bien été édité');
+        return to_route('dishes.admin')->with('success', 'Le plat a bien été édité');
     }
 
     /**
@@ -106,6 +110,13 @@ class DishController extends Controller
     public function destroy(Dish $dish)
     {
         $dish->delete();
-        return to_route('home')->with('success', 'Le plat a bien été supprimé');
+        return to_route('dishes.admin')->with('success', 'Le plat a bien été supprimé');
+    }
+
+    public function admin()
+    {
+        return view('dishes.admin', [
+            'dishes' => Dish::orderBy('created_at', 'desc')->paginate(25),
+        ]);
     }
 }

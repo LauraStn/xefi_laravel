@@ -1,52 +1,64 @@
 @extends('layouts.app')
 
 @section('content')
+    @role('admin')
+        <div class="d-flex justify-content-end gap-2 mb-4">
+            <a href="{{ route('dishes.admin') }}" class="btn btn-info">
+                Gestion des plats
+            </a>
+        </div>
+    @endrole
 
-    <div class="d-grid d-md-flex justify-content-md-end">
-        <a href="{{ route('dish.create') }}" class="btn btn-info">Créer</a>
-    </div>
+    <div class="container">
+        <div class="row g-4">
 
-    <table class="table table-dark table-striped">
-        <thead>
-            <tr>
-              <th></th>
-              <th>Titre</th>
-              <th>Créateur</th>
-              <th>Likes</th>
-              <th class="text-end">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
             @foreach ($dishes as $dish)
-                <tr>
-                     <td>
-                       {{--  <form action="{{ route('dish.favorite', $dish) }}" method="post"> --}}
-                            @csrf
-                            {{-- <button class="btn btn-light border-0"> --}}
-                                ❤️
-                            {{-- </button> --}}
-                        {{-- </form>--}}
-                    </td> 
-                    <td>{{ $dish->title }} </td>
-                    <td>{{ $dish->creator->name }}</td>
-                    <td>{{ $dish->favoredByUsers()->count() }}</td>
-                    <td>
-                        <div class="d-flex gap-2 w-100 justify-content-end">
-                            <a href=" {{ route('dish.show', $dish) }}" class="btn btn-success">Voir</a>
-                            <a href=" {{ route('dish.edit', $dish) }}" class="btn btn-primary">Editer</a>
-                            <form action=" {{route('dish.destroy', $dish) }} "method="post">
-                                @csrf
-                                @method("delete")
-                                <button class="btn btn-danger">Supprimer</button>
-                            </form>
+                <div class="col-12 col-md-6 col-lg-4">
+
+                    <div class="card h-100 shadow-sm">
+
+                        <img src="{{ asset($dish->image_path) }}" class="card-img-top" style="height:200px; object-fit:cover">
+
+                        <div class="card-body d-flex flex-column">
+
+                            <h5 class="card-title">{{ $dish->title }}</h5>
+
+                            <p class="text-muted mb-1">
+                                par {{ $dish->creator->name }}
+                            </p>
+
+                            <div class="d-flex gap-1">
+                                <form action="{{ route('dishes.toggle', $dish) }}" method="POST">
+                                    @csrf
+                                    <button type="submit" class="favorite-btn"
+                                        style="background: none; border: none; padding: 0; cursor: pointer;">
+                                        @if (in_array($dish->id, $favoriteIds))
+                                            <i class="bi bi-heart-fill text-danger"></i>
+                                        @else
+                                            <i class="bi bi-heart"></i>
+                                        @endif
+                                    </button>
+                                </form>
+                                <p class="mb-3"> {{ $dish->favoredByUsers()->count() }}</p>
+
+                            </div>
+
+                            <div class="mt-auto d-flex justify-content-between">
+                                <a href="{{ route('dish.show', $dish) }}" class="btn btn-success btn-sm">
+                                    Voir
+                                </a>
+                            </div>
+
                         </div>
-                    </td>
+                    </div>
 
-                </tr>
+                </div>
             @endforeach
-        </tbody>
-    </table>
 
-    {{ $dishes->links() }}
+        </div>
+
+        <div class="mt-4">
+            {{ $dishes->links() }}
+        </div>
+    </div>
 @endsection
-

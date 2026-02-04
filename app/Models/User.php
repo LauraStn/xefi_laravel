@@ -49,6 +49,11 @@ class User extends Authenticatable
         return $this->hasMany(Dish::class);
     }
 
+      /**
+     * The user’s favorite dishes
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
     public function favoriteDishes()
     {
         return $this->belongsToMany(Dish::class);

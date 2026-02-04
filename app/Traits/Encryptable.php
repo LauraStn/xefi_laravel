@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Crypt;
 trait Encryptable
 {
     /**
-     * Intercepte l’écriture d’un attribut pour le chiffrer si nécessaire
+     * Intercepts attribute setting to encrypt the value if needed
      */
     public function setAttribute($key, $value)
     {
@@ -19,7 +19,7 @@ trait Encryptable
     }
 
     /**
-     * Intercepte la lecture d’un attribut pour le déchiffrer si nécessaire
+     * Intercepts attribute access to decrypt the value if needed
      */
     public function getAttribute($key)
     {
@@ -29,7 +29,7 @@ trait Encryptable
             try {
                 $value = Crypt::decryptString($value);
             } catch (\Exception $e) {
-                // si le champ n’est pas chiffré, on retourne la valeur brute
+                // If the value is not encrypted, return the raw value
             }
         }
 
